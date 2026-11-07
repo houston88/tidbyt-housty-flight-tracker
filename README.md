@@ -9,6 +9,13 @@ Tracks the four Texins Flying Club aircraft out of McKinney National Airport (`K
 | **`N4135W`** | Piper Archer IV | Mint Green (`#81c784`) |
 | **`N6833C`** | Piper Cherokee | Coral Orange (`#ff8a65`) |
 
+## Previews
+
+| Airborne Live Telemetry View | 4-Plane Parked Status Board |
+| :---: | :---: |
+| ![Airborne View](preview_airborne.gif) | ![Parked Status Board](preview_live_board.gif) |
+| *Displayed automatically when any club aircraft is airborne (shows route, times, speed/heading, altitude, and nearest city).* | *Displayed when all four aircraft are on the ground, with scrolling route/time/location summaries for each plane.* |
+
 ## Features
 - **Custom Pixel-Art Silhouettes**: Distinct side-profile sprites for each aircraft type (16×8 for the airborne detail card and 10×6 mini icons for the 4-plane status board).
 - **Smart Display Modes**:
