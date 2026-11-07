@@ -1,0 +1,46 @@
+name: Update Tidbyt Flight Tracker
+
+on:
+  # Runs at the top of the hour during Central Time daytime (7 AM - 9 PM America/Chicago).
+  # Covers both CST (UTC-6: 13:00-03:00 UTC) and CDT (UTC-5: 12:00-02:00 UTC),
+  # with an in-job local hour check so DST transitions are handled automatically.
+  schedule:
+    - cron: "0 0-3,12-23 * * *"
+  # Allows triggering an immediate update manually from the GitHub Actions tab
+  workflow_dispatch:
+
+jobs:
+  push-to-tidbyt:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Central Time Window (7 AM - 9 PM CT)
+        id: time_check
+        if: github.event_name == 'schedule'
+        run: |
+          HOUR=$(TZ="America/Chicago" date +%-H)
+          echo "Current hour in America/Chicago: ${HOUR}:00"
+          if [ "$HOUR" -ge 7 ] && [ "$HOUR" -le 21 ]; then
+            echo "within_window=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "Outside 7 AM - 9 PM CT window; skipping."
+            echo "within_window=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Checkout repository
+        if: github.event_name == 'workflow_dispatch' || steps.time_check.outputs.within_window == 'true'
+        uses: actions/checkout@v4
+
+      - name: Install Pixlet
+        if: github.event_name == 'workflow_dispatch' || steps.time_check.outputs.within_window == 'true'
+        run: |
+          curl -sL https://github.com/tidbyt/pixlet/releases/download/v0.34.0/pixlet_0.34.0_linux_amd64.tar.gz | tar -xz
+          sudo mv pixlet /usr/local/bin/pixlet
+          pixlet version
+
+      - name: Render and Push to Tidbyt (Background)
+        if: github.event_name == 'workflow_dispatch' || steps.time_check.outputs.within_window == 'true'
+        env:
+          FLIGHTAWARE_API_KEY: ${{ secrets.FLIGHTAWARE_API_KEY }}
+          TIDBYT_DEVICE_ID: ${{ secrets.TIDBYT_DEVICE_ID }}
+          TIDBYT_API_KEY: ${{ secrets.TIDBYT_API_KEY }}
+        run: make push-bg
