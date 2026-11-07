@@ -44,3 +44,4 @@ jobs:
           TIDBYT_DEVICE_ID: ${{ secrets.TIDBYT_DEVICE_ID }}
           TIDBYT_API_KEY: ${{ secrets.TIDBYT_API_KEY }}
         run: make push-bg
+

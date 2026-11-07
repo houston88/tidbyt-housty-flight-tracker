@@ -6,7 +6,7 @@ OUTPUT = texins_flights.webp
 
 .PHONY: render serve demo cycle push push-bg
 
-INSTALLATION_ID ?= texins-flights
+INSTALLATION_ID ?= texinsflights
 
 render:
 	pixlet render $(SCRIPT) api_key="$(FLIGHTAWARE_API_KEY)" -o $(OUTPUT)
